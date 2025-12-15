@@ -1,4 +1,4 @@
-**API TO SWAP TOKENS VIA DEDUST**
+**API TO BUY/SELL(SWAP) TOKENS VIA DEDUST**
 
 # Beeton Swap API — Примеры запросов
 
