@@ -1,8 +1,15 @@
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 
+WORKDIR /workspace
 
-FROM tomcat:10-jre17
-COPY --from=build /app/target/beeton-swap-api.war /usr/local/tomcat/webapps/beeton-swap-api.war
+COPY pom.xml pom.xml
+RUN mvn -DskipTests dependency:go-offline
+
+COPY src src
+RUN mvn -DskipTests package
+
+FROM tomcat:10.1-jre17-temurin
+
+COPY --from=build /workspace/target/beeton-swap-api.war /usr/local/tomcat/webapps/beeton-swap-api.war
+
+EXPOSE 8080

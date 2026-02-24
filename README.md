@@ -8,6 +8,15 @@ POST http://localhost:8080/beeton-swap-api/swap/desust
 Content-Type: application/json
 ```
 
+## Аутентификация
+Эндпоинт защищён токеном. Передавайте токен в заголовке:
+
+```
+Authorization: Bearer <TOKEN>
+```
+
+Значение токена сейчас захардкожено в `beeton-swap/src/main/java/filters/TokenAuthFilter.java` (константа `EXPECTED_TOKEN`).
+
 ---
 
 ## Общие параметры запроса
@@ -33,7 +42,7 @@ Content-Type: application/json
 Вы хотите **купить `jettonA`**, используя TON и промежуточный обмен через `jettonB`.
 
 ```bash
-curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-Type: application/json'   -H 'Idempotency-Key: buy-multi-001'   -H 'X-Request-Id: req-buy-multi-001'   -d '{
+curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-Type: application/json'   -H 'Authorization: Bearer <TOKEN>'   -H 'Idempotency-Key: buy-multi-001'   -H 'X-Request-Id: req-buy-multi-001'   -d '{
     "direction": "buy",
     "route": "multi",
     "jettonA": "0:111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000",
@@ -57,7 +66,7 @@ curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-T
 Вы хотите **продать `jettonA`** за `jettonB` через TON.
 
 ```bash
-curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-Type: application/json'   -H 'Idempotency-Key: sell-multi-001'   -H 'X-Request-Id: req-sell-multi-001'   -d '{
+curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-Type: application/json'   -H 'Authorization: Bearer <TOKEN>'   -H 'Idempotency-Key: sell-multi-001'   -H 'X-Request-Id: req-sell-multi-001'   -d '{
     "direction": "sell",
     "route": "multi",
     "jettonA": "0:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -81,7 +90,7 @@ curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-T
 Вы хотите **продать jettonA** за **TON** напрямую, без второго шага.
 
 ```bash
-curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-Type: application/json'   -H 'Idempotency-Key: sell-native-001'   -H 'X-Request-Id: req-sell-native-001'   -d '{
+curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-Type: application/json'   -H 'Authorization: Bearer <TOKEN>'   -H 'Idempotency-Key: sell-native-001'   -H 'X-Request-Id: req-sell-native-001'   -d '{
     "direction": "sell",
     "route": "native",
     "jettonA": "0:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
@@ -90,6 +99,32 @@ curl -X POST 'http://localhost:8080/beeton-swap-api/swap/desust'   -H 'Content-T
     "mnemonic": "flush wolf spring claim shy mouse vibrant unfold trend call sea kick mechanic syrup winner crumble fun celery group high uncover miss deputy social"
   }'
 ```
+
+---
+
+# Docker
+
+## Сборка образа
+Из корня репозитория:
+
+```bash
+docker build -t beeton-swap-api:local .
+```
+
+Если хочешь собирать, используя `beeton-swap/Dockerfile`, то так:
+
+```bash
+docker build -t beeton-swap-api:local -f beeton-swap/Dockerfile beeton-swap
+```
+
+## Запуск
+
+```bash
+docker run --rm -p 8080:8080 beeton-swap-api:local
+```
+
+Эндпоинт внутри контейнера:
+`POST http://localhost:8080/beeton-swap-api/swap/desust`
 
 **Пояснение:**
 - `direction: "sell"` — вы продаёте токен **A**.

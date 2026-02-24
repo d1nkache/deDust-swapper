@@ -7,6 +7,16 @@
 
     <display-name>Beeton Swap API</display-name>
 
+    <filter>
+        <filter-name>TokenAuthFilter</filter-name>
+        <filter-class>filters.TokenAuthFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>TokenAuthFilter</filter-name>
+        <url-pattern>/swap/desust</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>SwapServlet</servlet-name>
         <servlet-class>servlets.SwapServlet</servlet-class>
